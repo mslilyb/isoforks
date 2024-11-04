@@ -1,0 +1,22 @@
+{
+    "gff_introns": true,
+    "cli": {
+        "--min_exon": 25,
+        "--min_intron": 35,
+        "--flank": 99,
+        "--limit": 100,
+        "--apwm": "/home/lrc/Documents/Code/isoforks/build/acc.pwm",
+        "--dpwm": "/home/lrc/Documents/Code/isoforks/build/don.pwm",
+        "--emm": "/home/lrc/Documents/Code/isoforks/build/exon.mm",
+        "--imm": "/home/lrc/Documents/Code/isoforks/build/intron.mm",
+        "--elen": "/home/lrc/Documents/Code/isoforks/build/exon.len",
+        "--ilen": "/home/lrc/Documents/Code/isoforks/build/intron.len"
+    },
+    "data": [
+        {
+            "name": "ch.17312",
+            "fasta": "/home/lrc/Documents/Code/isoforks/apc/ch.17312.fa",
+            "gff": "/home/lrc/Documents/Code/isoforks/apc/ch.17312.gff3"
+        }
+    ]
+}

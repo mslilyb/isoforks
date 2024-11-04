@@ -14,7 +14,9 @@ arg = parser.parse_args()
 i1 = isoform.get_introns(arg.gff1)
 i2 = isoform.get_introns(arg.gff2)
 
-dist, details = isoform.expdiff(i1, i2)
-print(dist)
+dists, details = isoform.expdiff(i1, i2)
+distnames = ["manhattan", "euclidean", "chebyshev", "bhatacharyya"]
+for name, dist in zip(distnames, dists):
+        print(f'{name}:\t{dist}')
 for exon, p1, p2 in details:
 	print(f'{exon[0]}\t{exon[1]}\t{p1:.6f}\t{p2:.6f}')

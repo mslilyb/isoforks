@@ -1,4 +1,3 @@
-
 import copy
 import gzip
 import itertools
@@ -97,8 +96,8 @@ def randseq(n):
 def get_filepointer(filename):
 	fp = None
 	if   filename.endswith('.gz'): fp = gzip.open(filename, 'rt')
-	elif filename == '-':          fp = sys.stdin
-	else:                          fp = open(filename)
+	elif filename == '-':	       fp = sys.stdin
+	else:			       fp = open(filename)
 	return fp
 
 def read_fasta(filename):
@@ -150,6 +149,40 @@ def manhattan(p, q):
 		d += abs(pi - qi)
 	return d
 
+def bhatach(p, q):
+	assert(math.isclose(sum(p), 1.0, abs_tol=1e-6))
+	assert(math.isclose(sum(q), 1.0, abs_tol=1e-6))
+	bc = 0
+	for px, qx in zip(p,q):
+		bc += math.sqrt(px * qx)
+
+	bdist = -math.log(bc)
+	return bdist
+
+def distances(p, q):
+	assert(math.isclose(sum(p), 1.0, abs_tol=1e-6))
+	assert(math.isclose(sum(q), 1.0, abs_tol=1e-6))
+	mand = 0
+	eucld = 0
+	chebd = 0
+	bc = 0 #bhatacharyya coefficient
+	
+	for pm, qm in zip(p, q):
+		dist = abs(pm - qm)
+		if dist > chebd:
+			chebd = dist #chebyshev
+		mand += abs(pm - qm) #manhattan
+		sqdist = math.pow(dist, 2) #sum of squared differences
+		bc += math.sqrt(pm * qm)
+
+	eucld = math.sqrt(sqdist) #euclidean
+	if bc == 0:
+		bdist = 'undef'
+	else:
+		bdist = -math.log(bc) #bhatacharyya 
+
+	return mand, eucld, chebd, bdist
+        
 #################
 ## PWM SECTION ##
 #################
@@ -579,8 +612,10 @@ def expdiff(introns1, introns2):
 		p2.append(i2[k])
 		details.append((k, i1[k], i2[k]))
 
-	distance = manhattan(p1, p2)
-	return distance, details
+	ds = distances(p1, p2)
+        
+	return ds, details
+	
 
 #########################
 ## TRANSLATION SECTION ##

@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(description='isoformer & optiso runer')
 parser.add_argument('genes', help='directory of genes (e.g apc)')
 parser.add_argument('models', help='directory of models (e.g. models)')
 parser.add_argument('build', help='build directory (e.g. build)')
+parser.add_argument('--BLI', help='enable BLI comparison', action='store_true')
 arg = parser.parse_args()
 
 if not os.path.exists(arg.build): os.makedirs(arg.build)
@@ -24,7 +25,7 @@ params = {
 	'--min_intron': 35,
 	'--flank': 99,
 	'--limit': 100,
-	'--apwm': f'{os.path.abspath(arg.models)}/acc.pwm',
+       	'--apwm': f'{os.path.abspath(arg.models)}/acc.pwm',
 	'--dpwm': f'{os.path.abspath(arg.models)}/don.pwm',
 	'--emm': f'{os.path.abspath(arg.models)}/exon.mm',
 	'--imm': f'{os.path.abspath(arg.models)}/intron.mm',
@@ -104,5 +105,9 @@ with open(f'{arg.build}/Makefile', 'w') as fp:
 	fp.write('\n\n')
 	for iso, ff, gff, name in zip(isos, ffs, gffs, names):
 		fp.write(f'{iso}:\n')
-		fp.write(f'\t isoformer {ff} {opts} > isoformer/{name}.gff\n')
-		fp.write(f'\t cmpiso {gff} isoformer/{name}.gff > {iso}\n')
+		if arg.BLI:
+			fp.write(f'\t isoformer {ff} {opts} --introns {gff} > isoformer/{name}.gff\n')
+		else:
+			fp.write(f'\t isoformer {ff} {opts} > isoformer/{name}.gff\n')
+
+		fp.write(f'\t newcmp {gff} isoformer/{name}.gff > {iso}\n')
